@@ -39,3 +39,9 @@
 
 # debug information files
 *.dwo
+
+# Personal VSCode configuration files
+.vscode/
+
+# CMake build directory
+build/
