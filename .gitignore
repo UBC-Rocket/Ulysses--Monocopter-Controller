@@ -44,9 +44,6 @@ Build/
 
 # STM32CubeIDE / Eclipse
 .settings/
-.project
-.cproject
-.mxproject
 
 # macOS
 .DS_Store
