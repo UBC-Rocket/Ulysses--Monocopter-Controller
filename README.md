@@ -1,7 +1,3 @@
-Here's a polished version of your README with improved structure and clarity:
-
----
-
 # Ulysses
 
 **Open-source flight controller firmware for UBC Rocket's experimental VTOL platform**
