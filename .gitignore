@@ -37,11 +37,13 @@
 *.out
 *.app
 
-# debug information files
+# Debug information files
 *.dwo
 
 # Personal VSCode configuration files
-.vscode/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
 
 # CMake build directory
 build/

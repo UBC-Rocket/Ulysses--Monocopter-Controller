@@ -1,0 +1,40 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Ulysses - Debug",
+            "cwd": "${workspaceFolder}",
+            "executable": "${config:cmake.buildDirectory}/debug/ulysses.elf",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32u5x.cfg"
+            ],
+            "svdFile": "${workspaceFolder}/platform/svd/STM32U575.svd",
+            "searchDir": [],
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "raw"
+        },
+        {
+            "name": "Ulysses - Release",
+            "cwd": "${workspaceFolder}",
+            "executable": "${config:cmake.buildDirectory}/release/ulysses.elf",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32u5x.cfg"
+            ],
+            "svdFile": "${workspaceFolder}/platform/svd/STM32U575.svd",
+            "searchDir": [],
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "raw"
+        }
+    ]
+}
