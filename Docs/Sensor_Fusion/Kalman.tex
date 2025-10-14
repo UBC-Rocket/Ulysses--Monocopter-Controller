@@ -52,8 +52,11 @@ We want to fuse this data in order to come to something more accurate regardless
 \subsection{Gyroscope}
 By integrating over time with respect to angular velocity, we can find the current angles of Ulysses.
 $$
-\theta_{x|t,t}=\theta_{x|t-1,t-1}+\Delta t\cdot\omega_x
+\theta_{x|t,t}=\theta_{x|t-1,t-1}+\Delta t\cdot\omega_{x|t}
 $$
-We expect the initial values of $\theta$ to be 0. We otherwise have no point of reference to begin our calculations.
-However, the gyroscope reports a noise 
+We expect the initial values of $\theta_{0,0}$ to be 0, as otherwise have no point of reference to begin our calculations.
+The key issue with the gyroscope is that it reports a noise 0.1\textdegree. Over the course of a flight, this uncertainty will compound, resulting in increasingly erroneous data eventually leading to a spectacular crash.
+Thus, while the gyroscope data is accurate regardless of acceleration, its noise makes it prone to drift.
+\subsection{Fusion}
+
 \end{document}
