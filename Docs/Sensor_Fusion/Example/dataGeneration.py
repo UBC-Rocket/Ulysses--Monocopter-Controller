@@ -17,20 +17,21 @@ class DataGenerator:
         self.velocities = [0, 0, 0]
 
     def next_velocity(self):
-        for i in range(3):
-            self.velocities[i] = self.next_velocity_function(self.t)
+        self.velocities = self.next_velocity_function(self.t)
         
     def next_thetas(self):
         for i in range(3):
             self.thetas[i] += (1 / self.rate) * self.velocities[i]
     
     def reported_data(self):
-        sensor_data = self.velocities
+        sensor_data = self.thetas[:]
 
         for i in range(3):
             parity = random.choice([1,-1])
             noise = parity * random.random() / 10 
             sensor_data[i] += noise
+
+        return sensor_data
 
             #print(noise)
 
@@ -43,8 +44,13 @@ class DataGenerator:
         return [self.thetas, self.reported_data()]
 
 
-def v1(v):
-    return math.sin(v) / (1 + v ** (4))
+def v1(t):
+    v = [0, 0, 0]
+
+    for i in range(2):
+        v[i] = math.sin(t) / (1 + t ** (4))
+    
+    return v
 
 d1 = DataGenerator(v1, 200)
 
