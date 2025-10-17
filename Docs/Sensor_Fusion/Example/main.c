@@ -3,6 +3,9 @@
 #include <stdio.h>
 #include <time.h>
 
+// compiled for python with
+// gcc -shared -o fusion_test.so -fPIC main.c ../Fusion/Fusion/*.c
+
 #define SAMPLE_RATE (100) // per s
 
 int main() {
@@ -42,6 +45,7 @@ int main() {
 
         // REPLACE WITH DATA TIMESTAMP
         const clock_t timestamp = clock(); 
+        printf("timestamp: %ld", timestamp);
 
         // REPLACE WITH ACTUAL DATA
         FusionVector gyroscope = {0.0f, 0.0f, 0.0f}; 
@@ -71,7 +75,7 @@ int main() {
 }
 
 
-int ten_sec_test(double accel[10 * SAMPLE_RATE][3], double gyro[10 * SAMPLE_RATE][3]) {
+void ten_sec_test(double time[10 * SAMPLE_RATE], double accel[10 * SAMPLE_RATE][3], double gyro[10 * SAMPLE_RATE][3], double output[10 * SAMPLE_RATE][3]) {
 
     // Define calibration (replace with actual calibration data if available)
     const FusionMatrix gyroscopeMisalignment = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
@@ -100,20 +104,16 @@ int ten_sec_test(double accel[10 * SAMPLE_RATE][3], double gyro[10 * SAMPLE_RATE
             .recoveryTriggerPeriod = 5 * SAMPLE_RATE, /* 5 seconds */
     };
     FusionAhrsSetSettings(&ahrs, &settings);
-
-    int timestep = 0;
     
     // This loop should repeat each time new gyroscope data is available
-    while (true) {
+    for (int i = 0; i < (10 * SAMPLE_RATE); i++) {
 
         // Acquire latest sensor data
 
-        // REPLACE WITH DATA TIMESTAMP
-        const clock_t timestamp = clock(); 
+        const clock_t timestamp = time[i] * CLOCKS_PER_SEC; 
 
-        // REPLACE WITH ACTUAL DATA
-        FusionVector gyroscope = {gyro[timestep][0], gyro[timestep][1], gyro[timestep][2]}; 
-        FusionVector accelerometer = {accel[timestep][0], accel[timestep][1], accel[timestep][2]};
+        FusionVector gyroscope = {gyro[i][0], gyro[i][1], gyro[i][2]}; 
+        FusionVector accelerometer = {accel[i][0], accel[i][1], accel[i][2]};
 
         // Apply calibration
         gyroscope = FusionCalibrationInertial(gyroscope, gyroscopeMisalignment, gyroscopeSensitivity, gyroscopeOffset);
@@ -132,8 +132,16 @@ int ten_sec_test(double accel[10 * SAMPLE_RATE][3], double gyro[10 * SAMPLE_RATE
         const FusionEuler euler = FusionQuaternionToEuler(FusionAhrsGetQuaternion(&ahrs));
         const FusionVector earth = FusionAhrsGetEarthAcceleration(&ahrs);
 
-        printf("Roll %0.1f, Pitch %0.1f, Yaw %0.1f, X %0.1f, Y %0.1f, Z %0.1f\n",
-               euler.angle.roll, euler.angle.pitch, euler.angle.yaw,
-               earth.axis.x, earth.axis.y, earth.axis.z);
+        // printf("Roll %0.1f, Pitch %0.1f, Yaw %0.1f, X %0.1f, Y %0.1f, Z %0.1f\n",
+        //        euler.angle.roll, euler.angle.pitch, euler.angle.yaw,
+        //        earth.axis.x, earth.axis.y, earth.axis.z);
+
+        output[i][0] = euler.angle.roll;
+        output[i][1] = euler.angle.pitch;
+        output[i][2] = euler.angle.yaw;        
     }
+}
+
+int add(int a, int b) {
+    return a + b;
 }
