@@ -9,9 +9,15 @@ import random
 import math
 
 class DataGenerator:
-    def __init__(self, next_velocity_function, rate):
+    def __init__(self, next_velocity_function, rate, file):
         self.next_velocity_function = next_velocity_function 
         self.rate = rate # per s
+        self.file = file
+
+        with open(self.file, "w") as file:
+            # CSV format is {time | gyrox | gyroy | gyroz | accelx | accely | accelz | realx | realy | realz}   
+            file.write("time,gyrox,gyroy,gyroz,accelx,accely,accelz,realx,realy,realz\n")
+
         self.t = 0
         self.thetas = [0, 0, 0]
         self.velocities = [0, 0, 0]
@@ -23,8 +29,8 @@ class DataGenerator:
         for i in range(3):
             self.thetas[i] += (1 / self.rate) * self.velocities[i]
     
-    def reported_data(self):
-        sensor_data = self.thetas[:]
+    def reported_velocity(self):
+        sensor_data = self.velocities[:]
 
         for i in range(3):
             parity = random.choice([1,-1])
@@ -33,15 +39,42 @@ class DataGenerator:
 
         return sensor_data
 
-            #print(noise)
+    def get_accel(self):
+        # MICHAEL JRDAN!!!!
+
+        x = self.thetas[0]
+        y = self.thetas[1]
+
+        a1 = math.cos(x) * math.cos(y)
+        a2 = math.sin(x) * math.cos(y)
+        a3 = math.sin(y)
+
+        # normalize vector
+        # b^2 * |a| = g
+        # b = sqrt (g / |a|)
+        g = 9.80665
+        coefficient = g / (math.sqrt(a1*a1 + a2*a2 + a3*a3))
+
+        accel_values = [coefficient * a1, coefficient * a2, coefficient * a3]
+
+        return accel_values
 
     def timestep(self):
         self.next_velocity()
-        self.next_thetas()
+        self.next_thetas()   
         self.t += (1 / self.rate)
+        
+        data = [self.reported_velocity(), self.get_accel(), self.thetas]
 
-        # [real data, noisy data]
-        return [self.thetas, self.reported_data()]
+        self.write_data(data, self.t)
+
+        # [real theta, noisy velocity]
+        return data
+
+    def write_data(self, data, t):
+        with open(self.file, "a") as file:
+            formatted = f"{t:.10f},{data[0][0]:.10f},{data[0][1]:.10f},{data[0][2]:.10f},{data[1][0]:.10f},{data[1][1]:.10f},{data[1][2]:.10f},{data[2][0]:.10f},{data[2][1]:.10f},{data[2][2]:.10f}\n"
+            file.write(formatted)
 
 
 def v1(t):
@@ -52,7 +85,7 @@ def v1(t):
     
     return v
 
-d1 = DataGenerator(v1, 200)
+d1 = DataGenerator(v1, 200, "Tests/Test 1/data.csv")
 
 while True:
     print(d1.timestep())
