@@ -33,6 +33,9 @@ class DataGenerator:
         sensor_data = self.velocities[:]
 
         for i in range(3):
+            # rad to deg
+            sensor_data[i] *= 180 / math.pi
+
             parity = random.choice([1,-1])
             noise = parity * random.random() / 10 
             sensor_data[i] += noise
@@ -40,24 +43,42 @@ class DataGenerator:
         return sensor_data
 
     def get_accel(self):
-        # MICHAEL JRDAN!!!!
+        # # MICHAEL JRDAN!!!!
 
-        x = self.thetas[0]
-        y = self.thetas[1]
+        # x = self.thetas[0]
+        # y = self.thetas[1]
 
-        a1 = math.cos(x) * math.cos(y)
-        a2 = math.sin(x) * math.cos(y)
-        a3 = math.sin(y)
+        # a1 = math.cos(x) * math.cos(y)
+        # a2 = math.sin(x) * math.cos(y)
+        # a3 = math.sin(y)
 
-        # normalize vector
-        # b^2 * |a| = g
-        # b = sqrt (g / |a|)
-        g = 9.80665
-        coefficient = g / (math.sqrt(a1*a1 + a2*a2 + a3*a3))
+        # accel_values = [a1, a2, a3]
 
-        accel_values = [coefficient * a1, coefficient * a2, coefficient * a3]
+        # return accel_values
+        # R_world_to_body = Rx * Ry * Rz
+        roll = self.thetas[0]
+        pitch = self.thetas[1]
+        yaw = self.thetas[2]
 
-        return accel_values
+        cR, sR = math.cos(roll), math.sin(roll)
+        cP, sP = math.cos(pitch), math.sin(pitch)
+        cY, sY = math.cos(yaw), math.sin(yaw)
+        R11 = cP * cY
+        R12 = cP * sY
+        R13 = -sP
+        R21 = sR * sP * cY - cR * sY
+        R22 = sR * sP * sY - cR * (-cY)  # = sR*sP*sY + cR*cY
+        R23 = sR * cP
+        R31 = cR * sP * cY + sR * sY
+        R32 = cR * sP * sY - sR * (-cY)  # = cR*sP*sY + sR*cY
+        R33 = cR * cP
+
+        # g_world = [0, 0, -1]
+        ax = R13 * (-1.0)
+        ay = R23 * (-1.0)
+        az = R33 * (-1.0)
+        
+        return [ax, ay, az]
 
     def timestep(self):
         self.next_velocity()
@@ -89,3 +110,4 @@ d1 = DataGenerator(v1, 200, "Tests/Test 1/data.csv")
 
 while True:
     print(d1.timestep())
+    print(math.sin(360))
