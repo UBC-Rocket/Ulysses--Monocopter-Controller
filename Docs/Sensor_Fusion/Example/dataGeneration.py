@@ -77,15 +77,19 @@ class DataGenerator:
         ax = R13 * (-1.0)
         ay = R23 * (-1.0)
         az = R33 * (-1.0)
-        
+
         return [ax, ay, az]
 
     def timestep(self):
         self.next_velocity()
         self.next_thetas()   
         self.t += (1 / self.rate)
+
+        degrees_thetas = self.thetas[:]
+        for i in range(3):
+            degrees_thetas[i] = degrees_thetas[i] * 180 / math.pi 
         
-        data = [self.reported_velocity(), self.get_accel(), self.thetas]
+        data = [self.reported_velocity(), self.get_accel(), degrees_thetas]
 
         self.write_data(data, self.t)
 
