@@ -97,13 +97,13 @@ void MX_FREERTOS_Init(void) {
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
   /* creation of MotorControl */
-  MotorControlHandle = osThreadNew(start_motor_control_task, NULL, &MotorControl_attributes);
+  MotorControlHandle = osThreadNew(motor_control_task_start, NULL, &MotorControl_attributes);
 
   /* creation of RadioCommunication */
-  RadioCommunicationHandle = osThreadNew(start_radio_communication_task, NULL, &RadioCommunication_attributes);
+  RadioCommunicationHandle = osThreadNew(radio_communication_task_start, NULL, &RadioCommunication_attributes);
 
   /* creation of SensorFusion */
-  SensorFusionHandle = osThreadNew(start_sensor_fusion_task, NULL, &SensorFusion_attributes);
+  SensorFusionHandle = osThreadNew(sensor_fusion_task_start, NULL, &SensorFusion_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

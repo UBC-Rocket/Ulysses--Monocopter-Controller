@@ -63,9 +63,9 @@ extern osThreadId_t SensorFusionHandle;
 
 /* USER CODE END FunctionPrototypes */
 
-extern void start_motor_control_task(void *argument);
-extern void start_radio_communication_task(void *argument);
-extern void start_sensor_fusion_task(void *argument);
+extern void motor_control_task_start(void *argument);
+extern void radio_communication_task_start(void *argument);
+extern void sensor_fusion_task_start(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
