@@ -8,6 +8,12 @@
 import random
 import math
 
+def gaussian_noise(mean, std):
+    u1 = random.random()
+    u2 = random.random()
+    z = math.sqrt(-2.0 * math.log(u1)) * math.cos(2.0 * math.pi * u2)
+    return mean + std * z
+
 class DataGenerator:
     def __init__(self, next_velocity_function, rate, file):
         self.next_velocity_function = next_velocity_function 
@@ -78,15 +84,15 @@ class DataGenerator:
         ay = R23
         az = R33
 
-        real_data = [ax, ay, az]
-        noisy_data = real_data
+        B_eff = 40.0  # effective bandwidth in Hz (for ODR = 100 Hz, normal mode)
+        noise_density_xy = 160e-6 * 9.81  # µg/√Hz → m/s²/√Hz
+        noise_density_z  = 190e-6 * 9.81
 
-        for i in range(3):
-            # rad to deg
-            parity = random.choice([1,-1])
-            noise = parity * random.random() / 200
-            noisy_data[i] += noise
+        # RMS noise for each axis
+        sigma_xy = noise_density_xy * math.sqrt(B_eff)
+        sigma_z  = noise_density_z  * math.sqrt(B_eff)
 
+        noisy_data = [ax + gaussian_noise(0.0, sigma_xy), ay + gaussian_noise(0.0, sigma_xy), az + gaussian_noise(0.0, sigma_z)]
         return noisy_data
 
     def timestep(self):
