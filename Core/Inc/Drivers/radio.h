@@ -3,7 +3,7 @@
 #ifndef RADIO_H
 #define RADIO_H
 
-#include "main.h" // This is essential. It includes all the STM32 HAL definitions.
+#include "stm32u5xx_hal.h" // This is essential. It includes all the STM32 HAL definitions.
 
 // --- Function Prototypes ---
 

@@ -131,16 +131,16 @@ int main(void)
 
 
   /* USER CODE BEGIN 2 */
-  // radio_init(&huart5);
+  radio_init(&huart5);
   
   // 2. Create a message to send
-  char test_message[] = "Ulysses Radio Driver Test: DMA OK!\r\n";
+  char test_message[] = "Def";
   
   // 3. Create a simple blocking loop for testing
   while(1)
   {
       // Send the message using your driver
-      // radio_send((uint8_t*)test_message, sizeof(test_message) - 1); // -1 to exclude null terminator
+      radio_send((uint8_t*)test_message, sizeof(test_message) - 1); // -1 to exclude null terminator
       
       // Blink an LED to show the main loop is still running and not blocked
       HAL_GPIO_TogglePin(STAT_LED_2_GPIO_Port, STAT_LED_2_Pin);

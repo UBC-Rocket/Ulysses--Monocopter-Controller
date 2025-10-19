@@ -18,8 +18,7 @@
             "openOCDLaunchCommands": ["program ${config:cmake.buildDirectory}/debug/ulysses.elf"],
             "svdFile": "${workspaceFolder}/platform/svd/STM32U575.svd",
             "searchDir": [],
-            // "runToEntryPoint": "main",
-            // "breakAfterReset": true,
+            "runToEntryPoint": "main",
             "showDevDebugOutput": "raw"
         },
         {
