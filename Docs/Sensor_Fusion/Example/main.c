@@ -64,8 +64,8 @@ int main() {
         printf("timestamp: %ld", timestamp);
 
         // REPLACE WITH ACTUAL DATA
-        FusionVector gyroscope = {0.0f, 0.0f, 0.0f}; 
-        FusionVector accelerometer = {0.0f, 0.0f, 1.0f}; // replace this with actual accelerometer data in g
+        FusionVector gyroscope = {0.2f, 0.3f, 0.4f}; 
+        FusionVector accelerometer = {0.1f, 0.0f, 0.99f}; // replace this with actual accelerometer data in g
 
         // Apply calibration
         gyroscope = FusionCalibrationInertial(gyroscope, gyroscopeMisalignment, gyroscopeSensitivity, gyroscopeOffset);
