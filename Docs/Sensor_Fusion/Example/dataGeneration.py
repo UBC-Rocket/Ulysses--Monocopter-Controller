@@ -78,7 +78,16 @@ class DataGenerator:
         ay = R23
         az = R33
 
-        return [ax, ay, az]
+        real_data = [ax, ay, az]
+        noisy_data = real_data
+
+        for i in range(3):
+            # rad to deg
+            parity = random.choice([1,-1])
+            noise = parity * random.random() / 200
+            noisy_data[i] += noise
+
+        return noisy_data
 
     def timestep(self):
         self.next_velocity()
@@ -110,8 +119,19 @@ def v1(t):
     
     return v
 
-d1 = DataGenerator(v1, 200, "Tests/Test 1/data.csv")
+def v2(t):
+    v = [0, 0, 0]
+
+    v[0] = math.sin(t) / max(t, 0.0004) / 20
+    v[1] = -math.sin(t) / max(t, 0.0004) / 20
+   
+    
+    return v
+
+d1 = DataGenerator(v1, 200, "Tests/test1.csv")
+d2 = DataGenerator(v2, 200, "Tests/test2.csv")
+
 
 while True:
     print(d1.timestep())
-    print(math.sin(360))
+    print(d2.timestep())
