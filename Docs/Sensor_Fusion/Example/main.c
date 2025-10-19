@@ -3,10 +3,16 @@
 #include <stdio.h>
 #include <time.h>
 
+// gcc -o fusion_test main.c ../Fusion/Fusion/*.c -lm
+
 // compiled for python with
 // gcc -shared -o fusion_test.so -fPIC main.c ../Fusion/Fusion/*.c
 
 #define SAMPLE_RATE (100) // per s
+
+static inline double timespec_to_seconds(const struct timespec *ts) {
+    return ts->tv_sec + ts->tv_nsec * 1e-9;
+}
 
 int main() {
 
@@ -38,8 +44,18 @@ int main() {
     };
     FusionAhrsSetSettings(&ahrs, &settings);
 
+    // timing stuff
+    struct timespec t_prev, t_now;
+    clock_gettime(CLOCK_MONOTONIC, &t_prev);
+
+    double total_time = 0.0;
+    int64_t iter_count = 0;
+    double min_dt = 1e9, max_dt = 0.0;
+
     // This loop should repeat each time new gyroscope data is available
     while (true) {
+
+
 
         // Acquire latest sensor data
 
@@ -71,6 +87,23 @@ int main() {
         printf("Roll %0.1f, Pitch %0.1f, Yaw %0.1f, X %0.1f, Y %0.1f, Z %0.1f\n",
                euler.angle.roll, euler.angle.pitch, euler.angle.yaw,
                earth.axis.x, earth.axis.y, earth.axis.z);
+
+        clock_gettime(CLOCK_MONOTONIC, &t_now);
+        double dT = timespec_to_seconds(&t_now) - timespec_to_seconds(&t_prev);
+        t_prev = t_now;  // move current to previous
+
+        total_time += dT;
+        iter_count++;
+        if (dT < min_dt) min_dt = dT;
+        if (dT > max_dt) max_dt = dT;
+
+        
+        if (iter_count % 100 == 0) {
+            double avg = total_time / (double)iter_count;
+            printf("iter=%ld: avg=%0.6f s, min=%0.6f s, max=%0.6f s\n",
+                   iter_count, avg, min_dt, max_dt);
+            fflush(stdout);
+        }
     }
 }
 

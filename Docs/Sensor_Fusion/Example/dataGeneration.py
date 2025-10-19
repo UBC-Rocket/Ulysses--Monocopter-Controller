@@ -74,9 +74,9 @@ class DataGenerator:
         R33 = cR * cP
 
         # g_world = [0, 0, -1]
-        ax = R13 * (-1.0)
-        ay = R23 * (-1.0)
-        az = R33 * (-1.0)
+        ax = R13
+        ay = R23
+        az = R33
 
         return [ax, ay, az]
 
