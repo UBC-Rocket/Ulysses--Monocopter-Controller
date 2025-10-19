@@ -1,6 +1,7 @@
 // In Core/Src/drivers/radio.c
 
 #include "Drivers/radio.h"
+#include "main.h"
 
 // --- Private Variables ---
 
@@ -42,5 +43,6 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
         // This function is called automatically by the HAL when the DMA transfer is finished.
         // For now, it can be empty. In the future, you could put logic here,
         // for example, to set a flag that a transmission has completed.
+        HAL_GPIO_WritePin(STAT_LED_2_GPIO_Port, STAT_LED_2_Pin, GPIO_PIN_SET);
     }
 }

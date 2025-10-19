@@ -134,19 +134,19 @@ int main(void)
   radio_init(&huart5);
   
   // 2. Create a message to send
-  char test_message[] = "Def";
+  char test_message[] = "Hello, world\r\n";
   
   // 3. Create a simple blocking loop for testing
   while(1)
   {
+      // Blink an LED to show the main loop is still running and not blocked
+      HAL_GPIO_WritePin(STAT_LED_2_GPIO_Port, STAT_LED_2_Pin, GPIO_PIN_RESET);
+
       // Send the message using your driver
       radio_send((uint8_t*)test_message, sizeof(test_message) - 1); // -1 to exclude null terminator
       
-      // Blink an LED to show the main loop is still running and not blocked
-      HAL_GPIO_TogglePin(STAT_LED_2_GPIO_Port, STAT_LED_2_Pin);
-      
       // Wait 1 second
-      HAL_Delay(1000);
+      HAL_Delay(5000);
   }
   /* USER CODE END 2 */
 
