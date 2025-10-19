@@ -213,7 +213,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
     handle_GPDMA1_Channel3.Init.Request = GPDMA1_REQUEST_UART5_TX;
     handle_GPDMA1_Channel3.Init.BlkHWRequest = DMA_BREQ_SINGLE_BURST;
     handle_GPDMA1_Channel3.Init.Direction = DMA_MEMORY_TO_PERIPH;
-    handle_GPDMA1_Channel3.Init.SrcInc = DMA_SINC_FIXED;
+    handle_GPDMA1_Channel3.Init.SrcInc = DMA_SINC_INCREMENTED;
     handle_GPDMA1_Channel3.Init.DestInc = DMA_DINC_FIXED;
     handle_GPDMA1_Channel3.Init.SrcDataWidth = DMA_SRC_DATAWIDTH_BYTE;
     handle_GPDMA1_Channel3.Init.DestDataWidth = DMA_DEST_DATAWIDTH_BYTE;
@@ -290,6 +290,9 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
       Error_Handler();
     }
 
+    /* UART5 interrupt Init */
+    HAL_NVIC_SetPriority(UART5_IRQn, 5, 0);
+    HAL_NVIC_EnableIRQ(UART5_IRQn);
     /* USER CODE BEGIN UART5_MspInit 1 */
 
     /* USER CODE END UART5_MspInit 1 */
@@ -428,6 +431,9 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* huart)
     /* UART5 DMA DeInit */
     HAL_DMA_DeInit(huart->hdmatx);
     HAL_DMA_DeInit(huart->hdmarx);
+
+    /* UART5 interrupt DeInit */
+    HAL_NVIC_DisableIRQ(UART5_IRQn);
     /* USER CODE BEGIN UART5_MspDeInit 1 */
 
     /* USER CODE END UART5_MspDeInit 1 */
