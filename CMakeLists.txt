@@ -44,6 +44,10 @@ set(RTOS_TASKS_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/Tasks/sensor_fusion.c
 )
 
+set(DRIVERS_SRC
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/Drivers/radio.c
+)
+
 # Link directories setup
 target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined library search paths
@@ -53,6 +57,7 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
     ${RTOS_TASKS_SRC}
+    ${DRIVERS_SRC}
 )
 
 # Add include paths

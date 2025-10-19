@@ -15,9 +15,11 @@
                 "interface/stlink.cfg",
                 "target/stm32u5x.cfg"
             ],
+            "openOCDLaunchCommands": ["program ${config:cmake.buildDirectory}/debug/ulysses.elf"],
             "svdFile": "${workspaceFolder}/platform/svd/STM32U575.svd",
             "searchDir": [],
-            "runToEntryPoint": "main",
+            // "runToEntryPoint": "main",
+            // "breakAfterReset": true,
             "showDevDebugOutput": "raw"
         },
         {

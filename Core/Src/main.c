@@ -1,4 +1,5 @@
 /* USER CODE BEGIN Header */
+// below file is main.c
 /**
   ******************************************************************************
   * @file           : main.c
@@ -19,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os2.h"
+#include "Drivers/radio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -126,9 +128,29 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USART3_UART_Init();
   MX_USB_OTG_FS_PCD_Init();
-  /* USER CODE BEGIN 2 */
 
+
+  /* USER CODE BEGIN 2 */
+  // radio_init(&huart5);
+  
+  // 2. Create a message to send
+  char test_message[] = "Ulysses Radio Driver Test: DMA OK!\r\n";
+  
+  // 3. Create a simple blocking loop for testing
+  while(1)
+  {
+      // Send the message using your driver
+      // radio_send((uint8_t*)test_message, sizeof(test_message) - 1); // -1 to exclude null terminator
+      
+      // Blink an LED to show the main loop is still running and not blocked
+      HAL_GPIO_TogglePin(STAT_LED_2_GPIO_Port, STAT_LED_2_Pin);
+      
+      // Wait 1 second
+      HAL_Delay(1000);
+  }
   /* USER CODE END 2 */
+
+
 
   /* Init scheduler */
   osKernelInitialize();
