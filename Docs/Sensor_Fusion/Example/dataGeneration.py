@@ -7,12 +7,18 @@
 
 import random
 import math
+import matplotlib.pyplot as plt
 
 def gaussian_noise(mean, std):
     u1 = random.random()
     u2 = random.random()
     z = math.sqrt(-2.0 * math.log(u1)) * math.cos(2.0 * math.pi * u2)
     return mean + std * z
+
+def impulse_function(x, mean, std):
+    y = (std * math.sqrt(2 * math.pi)) ** (-1) * (math.e) ** (-(1/2)*((x - mean) / std)**2)
+    y = min(y, 0.5)
+    return y
 
 class DataGenerator:
     def __init__(self, next_velocity_function, rate, file):
@@ -92,7 +98,22 @@ class DataGenerator:
         sigma_xy = noise_density_xy * math.sqrt(B_eff)
         sigma_z  = noise_density_z  * math.sqrt(B_eff)
 
-        noisy_data = [ax + gaussian_noise(0.0, sigma_xy), ay + gaussian_noise(0.0, sigma_xy), az + gaussian_noise(0.0, sigma_z)]
+
+        std = 0.02
+        impulse_x = 2
+        impulse_y = 7
+
+        noisy_data = [
+            ax + gaussian_noise(0.0, sigma_xy) + impulse_function(self.t, impulse_x, std), 
+            ay + gaussian_noise(0.0, sigma_xy) + impulse_function(self.t, impulse_y, std), 
+            az + gaussian_noise(0.0, sigma_z)
+        ]
+
+        tick = ((self.t) / (1 / self.rate))
+
+        if (tick > 195 and tick < 205):
+            print(noisy_data)
+
         return noisy_data
 
     def timestep(self):
@@ -106,12 +127,12 @@ class DataGenerator:
         
         data = [self.reported_velocity(), self.get_accel(), degrees_thetas]
 
-        self.write_data(data, self.t)
+        self.write_data(self.t, data)
 
-        # [real theta, noisy velocity]
+        # [noisy velocity, noisy accel, real theta]
         return data
 
-    def write_data(self, data, t):
+    def write_data(self, t, data):
         with open(self.file, "a") as file:
             formatted = f"{t:.10f},{data[0][0]:.10f},{data[0][1]:.10f},{data[0][2]:.10f},{data[1][0]:.10f},{data[1][1]:.10f},{data[1][2]:.10f},{data[2][0]:.10f},{data[2][1]:.10f},{data[2][2]:.10f}\n"
             file.write(formatted)
@@ -129,15 +150,23 @@ def v2(t):
     v = [0, 0, 0]
 
     v[0] = math.sin(t) / max(t, 0.0004) / 20
-    v[1] = -math.sin(t) / max(t, 0.0004) / 20
+    v[1] = math.sin(t) / max(t, 0.0004) / 20
    
     
     return v
 
-d1 = DataGenerator(v1, 200, "Tests/test1.csv")
-d2 = DataGenerator(v2, 200, "Tests/test2.csv")
+d1 = DataGenerator(v1, 100, "Tests/test1.csv")
+d2 = DataGenerator(v2, 100, "Tests/test2.csv")
 
 
-while True:
-    print(d1.timestep())
-    print(d2.timestep())
+for i in range(1000):
+    d1.timestep()
+    d2.timestep()
+
+# debugging impulse function
+fig, ax = plt.subplots()
+
+ax.plot([x/100 for x in range(0,1000)],
+        [impulse_function(x/100, 2, 0.01) for x in range(0,1000)])
+
+plt.show()

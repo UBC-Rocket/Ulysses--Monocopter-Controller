@@ -2,6 +2,7 @@ import ctypes
 import numpy as np
 import csv
 import time as timer
+import math
 
 import matplotlib.pyplot as plt
 
@@ -105,3 +106,6 @@ def test_with_data(f):
     plt.show()
 
 test_with_data("Tests/test2.csv")
+
+
+
