@@ -12,7 +12,11 @@ lib = ctypes.CDLL('./fusion_test.so')
 SAMPLE_RATE = 100
 N = 10 * SAMPLE_RATE
 
+<<<<<<< HEAD
 def test_with_data(f, provided_gain):
+=======
+def test_with_data(f):
+>>>>>>> b58666f0a06adca112cb0919a2663b6b83b6ffa0
     Double3 = ctypes.c_double * 3
     Double3Array = Double3 * N
 
@@ -20,8 +24,12 @@ def test_with_data(f, provided_gain):
         ctypes.POINTER(ctypes.c_double),  # time array
         ctypes.POINTER(Double3),          # accel[N][3]
         ctypes.POINTER(Double3),          # gyro[N][3]
+<<<<<<< HEAD
         ctypes.c_double,
         ctypes.POINTER(Double3)           # output[N][3]
+=======
+        ctypes.POINTER(Double3),          # output[N][3]
+>>>>>>> b58666f0a06adca112cb0919a2663b6b83b6ffa0
     ]
 
     lib.ten_sec_test.restype = None       # technically returns nothing
@@ -30,7 +38,10 @@ def test_with_data(f, provided_gain):
     accel = np.zeros((N, 3), dtype=np.float64)
     gyro = np.zeros((N, 3), dtype=np.float64)
     output = np.zeros((N, 3), dtype=np.float64)
+<<<<<<< HEAD
     gain = np.float64(provided_gain)
+=======
+>>>>>>> b58666f0a06adca112cb0919a2663b6b83b6ffa0
 
     real = np.zeros((N, 3), dtype=np.float64)
 
@@ -59,7 +70,11 @@ def test_with_data(f, provided_gain):
 
             if (i >= N):
                 break
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> b58666f0a06adca112cb0919a2663b6b83b6ffa0
 
     time_ptr = (ctypes.c_double * N)(*time)
     accel_ptr = accel.ctypes.data_as(ctypes.POINTER(Double3))
@@ -68,6 +83,7 @@ def test_with_data(f, provided_gain):
 
     before = timer.time()
     # running actual c function
+<<<<<<< HEAD
     lib.ten_sec_test(time_ptr, accel_ptr, gyro_ptr, gain, out_ptr)
     after = timer.time()
 
@@ -75,6 +91,15 @@ def test_with_data(f, provided_gain):
     # print(delta)
     # print(f"{(delta / N):.10f}")
     # print(f"{0.01 / (delta / N)}")
+=======
+    lib.ten_sec_test(time_ptr, accel_ptr, gyro_ptr, out_ptr)
+    after = timer.time()
+
+    delta = after - before
+    print(delta)
+    print(f"{(delta / N):.10f}")
+    print(f"{0.01 / (delta / N)}")
+>>>>>>> b58666f0a06adca112cb0919a2663b6b83b6ffa0
 
     rollx = []
     rolly = []
@@ -86,8 +111,11 @@ def test_with_data(f, provided_gain):
         rolly.append(abs(output[i][1] - real[i][1]))
         rollz.append(abs(output[i][2] - real[i][2]))
 
+<<<<<<< HEAD
     print(gyro[0,0],accel[0,0],real[0,0],output[0],rollx[0])
 
+=======
+>>>>>>> b58666f0a06adca112cb0919a2663b6b83b6ffa0
     fig, axs = plt.subplots(2, 2, figsize=(10, 8)) # 2 rows, 2 columns
 
     axs[0,0].plot(t, rollx)
@@ -107,6 +135,7 @@ def test_with_data(f, provided_gain):
     plt.legend()
 
     plt.tight_layout()
+<<<<<<< HEAD
 
 test_with_data("Tests/test2.csv", 0.2)
 test_with_data("Tests/test2.csv", 0.1)
@@ -115,4 +144,11 @@ test_with_data("Tests/test2.csv", 0.2)
 
 plt.show()
 
+=======
+    plt.show()
+
+test_with_data("Tests/test2.csv")
+
+
+>>>>>>> b58666f0a06adca112cb0919a2663b6b83b6ffa0
 

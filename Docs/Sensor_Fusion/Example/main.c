@@ -36,7 +36,11 @@ int main() {
     // Set AHRS algorithm settings
     const FusionAhrsSettings settings = {
             .convention = FusionConventionNwu,
+<<<<<<< HEAD
             .gain = 1.0f,
+=======
+            .gain = 0.5f,
+>>>>>>> b58666f0a06adca112cb0919a2663b6b83b6ffa0
             .gyroscopeRange = 2000.0f, /* read from register 0x0F */
             .accelerationRejection = 10.0f,
             .magneticRejection = 10.0f,
@@ -107,7 +111,11 @@ int main() {
 }
 
 
+<<<<<<< HEAD
 void ten_sec_test(double time[10 * SAMPLE_RATE], double accel[10 * SAMPLE_RATE][3], double gyro[10 * SAMPLE_RATE][3], double gain, double output[10 * SAMPLE_RATE][3]) {
+=======
+void ten_sec_test(double time[10 * SAMPLE_RATE], double accel[10 * SAMPLE_RATE][3], double gyro[10 * SAMPLE_RATE][3], double output[10 * SAMPLE_RATE][3]) {
+>>>>>>> b58666f0a06adca112cb0919a2663b6b83b6ffa0
 
     // Define calibration (replace with actual calibration data if available)
     const FusionMatrix gyroscopeMisalignment = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
@@ -129,15 +137,22 @@ void ten_sec_test(double time[10 * SAMPLE_RATE], double accel[10 * SAMPLE_RATE][
     // Set AHRS algorithm settings
     const FusionAhrsSettings settings = {
             .convention = FusionConventionNwu,
+<<<<<<< HEAD
             .gain = gain,
+=======
+            .gain = 0.5f,
+>>>>>>> b58666f0a06adca112cb0919a2663b6b83b6ffa0
             .gyroscopeRange = 2000.0f, /* read from register 0x0F */
             .accelerationRejection = 10.0f,
             .magneticRejection = 10.0f,
             .recoveryTriggerPeriod = 5 * SAMPLE_RATE, /* 5 seconds */
     };
     FusionAhrsSetSettings(&ahrs, &settings);
+<<<<<<< HEAD
 
     clock_t previousTimestamp = (clock_t)(time[0] * CLOCKS_PER_SEC);
+=======
+>>>>>>> b58666f0a06adca112cb0919a2663b6b83b6ffa0
     
     // This loop should repeat each time new gyroscope data is available
     for (int i = 0; i < (10 * SAMPLE_RATE); i++) {
@@ -157,6 +172,10 @@ void ten_sec_test(double time[10 * SAMPLE_RATE], double accel[10 * SAMPLE_RATE][
         gyroscope = FusionOffsetUpdate(&offset, gyroscope);
 
         // Calculate delta time (in seconds) to account for gyroscope sample clock error
+<<<<<<< HEAD
+=======
+        static clock_t previousTimestamp;
+>>>>>>> b58666f0a06adca112cb0919a2663b6b83b6ffa0
         const float deltaTime = (float) (timestamp - previousTimestamp) / (float) CLOCKS_PER_SEC;
         previousTimestamp = timestamp;
 

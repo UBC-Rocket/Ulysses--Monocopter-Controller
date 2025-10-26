@@ -17,7 +17,11 @@ def gaussian_noise(mean, std):
 
 def impulse_function(x, mean, std):
     y = (std * math.sqrt(2 * math.pi)) ** (-1) * (math.e) ** (-(1/2)*((x - mean) / std)**2)
+<<<<<<< HEAD
     y = min(y, 0.02)
+=======
+    y = min(y, 0.5)
+>>>>>>> b58666f0a06adca112cb0919a2663b6b83b6ffa0
     return y
 
 class DataGenerator:
@@ -99,8 +103,13 @@ class DataGenerator:
         sigma_z  = noise_density_z  * math.sqrt(B_eff)
 
 
+<<<<<<< HEAD
         std = 0.1
         impulse_x = 4
+=======
+        std = 0.02
+        impulse_x = 2
+>>>>>>> b58666f0a06adca112cb0919a2663b6b83b6ffa0
         impulse_y = 7
 
         noisy_data = [
