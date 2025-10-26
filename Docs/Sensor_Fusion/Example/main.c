@@ -54,9 +54,6 @@ int main() {
 
     // This loop should repeat each time new gyroscope data is available
     while (true) {
-
-
-
         // Acquire latest sensor data
 
         // REPLACE WITH DATA TIMESTAMP
@@ -81,12 +78,14 @@ int main() {
 
         FusionAhrsUpdateNoMagnetometer(&ahrs, gyroscope, accelerometer, deltaTime);
 
+        const FusionQuaternion quat = FusionAhrsGetQuaternion(&ahrs);
         const FusionEuler euler = FusionQuaternionToEuler(FusionAhrsGetQuaternion(&ahrs));
         const FusionVector earth = FusionAhrsGetEarthAcceleration(&ahrs);
 
         printf("Roll %0.1f, Pitch %0.1f, Yaw %0.1f, X %0.1f, Y %0.1f, Z %0.1f\n",
                euler.angle.roll, euler.angle.pitch, euler.angle.yaw,
                earth.axis.x, earth.axis.y, earth.axis.z);
+        printf("Q1 %0.5f, Q2 %0.5f, Q3 %0.5f, Q4 %0.5f\n", quat.element.x, quat.element.y, quat.element.z, quat.element.w);
 
         clock_gettime(CLOCK_MONOTONIC, &t_now);
         double dT = timespec_to_seconds(&t_now) - timespec_to_seconds(&t_prev);
