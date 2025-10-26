@@ -36,7 +36,7 @@ int main() {
     // Set AHRS algorithm settings
     const FusionAhrsSettings settings = {
             .convention = FusionConventionNwu,
-            .gain = 0.5f,
+            .gain = 1.0f,
             .gyroscopeRange = 2000.0f, /* read from register 0x0F */
             .accelerationRejection = 10.0f,
             .magneticRejection = 10.0f,
@@ -107,7 +107,7 @@ int main() {
 }
 
 
-void ten_sec_test(double time[10 * SAMPLE_RATE], double accel[10 * SAMPLE_RATE][3], double gyro[10 * SAMPLE_RATE][3], double output[10 * SAMPLE_RATE][3]) {
+void ten_sec_test(double time[10 * SAMPLE_RATE], double accel[10 * SAMPLE_RATE][3], double gyro[10 * SAMPLE_RATE][3], double gain, double output[10 * SAMPLE_RATE][3]) {
 
     // Define calibration (replace with actual calibration data if available)
     const FusionMatrix gyroscopeMisalignment = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
@@ -129,13 +129,15 @@ void ten_sec_test(double time[10 * SAMPLE_RATE], double accel[10 * SAMPLE_RATE][
     // Set AHRS algorithm settings
     const FusionAhrsSettings settings = {
             .convention = FusionConventionNwu,
-            .gain = 0.5f,
+            .gain = gain,
             .gyroscopeRange = 2000.0f, /* read from register 0x0F */
             .accelerationRejection = 10.0f,
             .magneticRejection = 10.0f,
             .recoveryTriggerPeriod = 5 * SAMPLE_RATE, /* 5 seconds */
     };
     FusionAhrsSetSettings(&ahrs, &settings);
+
+    clock_t previousTimestamp = (clock_t)(time[0] * CLOCKS_PER_SEC);
     
     // This loop should repeat each time new gyroscope data is available
     for (int i = 0; i < (10 * SAMPLE_RATE); i++) {
@@ -155,7 +157,6 @@ void ten_sec_test(double time[10 * SAMPLE_RATE], double accel[10 * SAMPLE_RATE][
         gyroscope = FusionOffsetUpdate(&offset, gyroscope);
 
         // Calculate delta time (in seconds) to account for gyroscope sample clock error
-        static clock_t previousTimestamp;
         const float deltaTime = (float) (timestamp - previousTimestamp) / (float) CLOCKS_PER_SEC;
         previousTimestamp = timestamp;
 

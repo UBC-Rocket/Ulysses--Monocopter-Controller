@@ -12,7 +12,7 @@ lib = ctypes.CDLL('./fusion_test.so')
 SAMPLE_RATE = 100
 N = 10 * SAMPLE_RATE
 
-def test_with_data(f):
+def test_with_data(f, provided_gain):
     Double3 = ctypes.c_double * 3
     Double3Array = Double3 * N
 
@@ -20,7 +20,8 @@ def test_with_data(f):
         ctypes.POINTER(ctypes.c_double),  # time array
         ctypes.POINTER(Double3),          # accel[N][3]
         ctypes.POINTER(Double3),          # gyro[N][3]
-        ctypes.POINTER(Double3),          # output[N][3]
+        ctypes.c_double,
+        ctypes.POINTER(Double3)           # output[N][3]
     ]
 
     lib.ten_sec_test.restype = None       # technically returns nothing
@@ -29,6 +30,7 @@ def test_with_data(f):
     accel = np.zeros((N, 3), dtype=np.float64)
     gyro = np.zeros((N, 3), dtype=np.float64)
     output = np.zeros((N, 3), dtype=np.float64)
+    gain = np.float64(provided_gain)
 
     real = np.zeros((N, 3), dtype=np.float64)
 
@@ -57,7 +59,7 @@ def test_with_data(f):
 
             if (i >= N):
                 break
-
+    
 
     time_ptr = (ctypes.c_double * N)(*time)
     accel_ptr = accel.ctypes.data_as(ctypes.POINTER(Double3))
@@ -66,13 +68,13 @@ def test_with_data(f):
 
     before = timer.time()
     # running actual c function
-    lib.ten_sec_test(time_ptr, accel_ptr, gyro_ptr, out_ptr)
+    lib.ten_sec_test(time_ptr, accel_ptr, gyro_ptr, gain, out_ptr)
     after = timer.time()
 
-    delta = after - before
-    print(delta)
-    print(f"{(delta / N):.10f}")
-    print(f"{0.01 / (delta / N)}")
+    # delta = after - before
+    # print(delta)
+    # print(f"{(delta / N):.10f}")
+    # print(f"{0.01 / (delta / N)}")
 
     rollx = []
     rolly = []
@@ -83,6 +85,8 @@ def test_with_data(f):
         rollx.append(abs(output[i][0] - real[i][0]))
         rolly.append(abs(output[i][1] - real[i][1]))
         rollz.append(abs(output[i][2] - real[i][2]))
+
+    print(gyro[0,0],accel[0,0],real[0,0],output[0],rollx[0])
 
     fig, axs = plt.subplots(2, 2, figsize=(10, 8)) # 2 rows, 2 columns
 
@@ -103,9 +107,12 @@ def test_with_data(f):
     plt.legend()
 
     plt.tight_layout()
-    plt.show()
 
-test_with_data("Tests/test2.csv")
+test_with_data("Tests/test2.csv", 0.2)
+test_with_data("Tests/test2.csv", 0.1)
+test_with_data("Tests/test2.csv", 0.2)
 
+
+plt.show()
 
 
