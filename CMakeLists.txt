@@ -39,9 +39,9 @@ add_subdirectory(cmake/stm32cubemx)
 
 # Source files for RTOS task entry points
 set(RTOS_TASKS_SRC
-    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/Tasks/motor_control.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/Tasks/radio_communication.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/Tasks/sensor_fusion.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/tasks/motor_control.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/tasks/radio_communication.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/tasks/sensor_fusion.c
 )
 
 # Link directories setup
