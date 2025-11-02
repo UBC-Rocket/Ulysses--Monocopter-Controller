@@ -6,7 +6,32 @@ set(CMAKE_CXX_COMPILER_ID GNU)
 
 # Some default GCC settings
 # arm-none-eabi- must be part of path environment
-set(TOOLCHAIN_PREFIX                arm-none-eabi-)
+set(_ULYSSES_TOOLCHAIN_CANDIDATES
+    $ENV{ARM_GNU_TOOLCHAIN}
+    $ENV{ARM_GNU_TOOLCHAIN_ROOT}
+    "/Applications/ArmGNUToolchain/14.3.rel1/arm-none-eabi"
+    "/Applications/ArmGNUToolchain/14.3.rel1"
+)
+
+unset(_ULYSSES_TOOLCHAIN_BIN_DIR CACHE)
+foreach(_candidate IN LISTS _ULYSSES_TOOLCHAIN_CANDIDATES)
+    if(NOT _candidate)
+        continue()
+    endif()
+    if(EXISTS "${_candidate}/bin/arm-none-eabi-gcc")
+        set(_ULYSSES_TOOLCHAIN_BIN_DIR "${_candidate}/bin")
+        break()
+    elseif(EXISTS "${_candidate}/arm-none-eabi/bin/arm-none-eabi-gcc")
+        set(_ULYSSES_TOOLCHAIN_BIN_DIR "${_candidate}/arm-none-eabi/bin")
+        break()
+    endif()
+endforeach()
+
+if(_ULYSSES_TOOLCHAIN_BIN_DIR)
+    set(TOOLCHAIN_PREFIX            "${_ULYSSES_TOOLCHAIN_BIN_DIR}/arm-none-eabi-")
+else()
+    set(TOOLCHAIN_PREFIX            arm-none-eabi-)
+endif()
 
 set(CMAKE_C_COMPILER                ${TOOLCHAIN_PREFIX}gcc)
 set(CMAKE_ASM_COMPILER              ${CMAKE_C_COMPILER})

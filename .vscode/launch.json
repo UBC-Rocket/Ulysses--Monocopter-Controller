@@ -16,8 +16,16 @@
                 "target/stm32u5x.cfg"
             ],
             "svdFile": "${workspaceFolder}/platform/svd/STM32U575.svd",
-            "searchDir": [],
+            "searchDir": ["${env:OPENOCD_SCRIPTS}"],
             "runToEntryPoint": "main",
+            "preLaunchTask": "CMake: build",
+            "preLaunchCommands": [
+                "monitor adapter speed 1000",
+                "monitor reset halt",
+                "load",
+                "break main"
+            ],
+            "postLaunchCommands": ["continue"],
             "showDevDebugOutput": "raw"
         },
         {
